@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transportista - Viajes disponibles</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/envios.css">
+</head>
+
+<body>
+    <!-- Barra de navegación -->
+    <div class="barranav">
+        <nav class="navbar navbar-expand-lg navbar-dark" style="background:#1a512e;" data-bs-theme="light w-100">
+            <div class="container-fluid">
+                <a class="navbar-brand me-5" href="enviosDashboard.html">Agrolink</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/VehiculosDashboard.html">Mis vehiculos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/perfilTransportista.html">Mi perfil</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="">Cerrar sesión</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <!-- Filtros -->
+            <div class="col-lg-3 mt-3">
+                <div class="filtros sticky-top" style="top: 10px; background-color: #c6dc93;">
+                    <h5 class="mb-4"></i>Filtra tus viajes</h5>
+
+                    <div class="mb-3">
+                        <label class="form-label">Ubicación</label>
+                        <input type="text" class="form-control" placeholder="Ciudad o dirección">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Fecha</label>
+                        <input type="date" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Tipo de carga</label>
+                        <select class="form-select">
+                            <option selected>Todas</option>
+                            <option>Liquidos</option>
+                            <option>Refrigerados</option>
+                            <option>Peredeceros</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Rango de peso (kg)</label>
+                        <input type="range" class="form-range peso-slider" min="0" max="15000" step="100" value="0">
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <small class="text-muted">0 kg</small>
+                            <span class="badge bg-success valor-peso">0 kg</span>
+                            <small class="text-muted">15000 kg</small>
+                        </div>
+                    </div>
+
+
+                    <button class="btn btn-success w-100 mt-2">
+                        <i class="fas fa-search me-2"></i>Buscar viajes
+                    </button>
+                </div>
+            </div>
+
+            <!-- Lista de viajes -->
+            <div class="col-lg-9 mt-3">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4>Viajes disponibles</h4>
+                    <div>
+                        <span class="badge bg-primary rounded-pill">2 viajes encontrados</span>
+                    </div>
+                </div>
+
+                <!-- Viaje 1 -->
+                <div class="card card-viaje">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <span class="badge bg-success badge-estado mb-2">Disponible</span>
+                                        <h5>Platano hartón</h5>
+                                        <p class="text-muted"> Medellín
+                                            <i class="fas fa-arrow-right mx-2"></i>
+                                            Bogotá
+                                        </p>
+                                    </div>
+                                    <h4 class="text-dark">$350.000</h4>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <div class="col-md-6 info-cliente mb-3">
+                                        <h6>Cliente</h6>
+                                        <p class="mb-1"><strong>Camila Vargas</strong> </p>
+                                        <p class="mb-1 small"><i class="fas fa-phone me-2"></i>310 456 7890</p>
+                                        <p class="mb-0 small"><i class="fas fa-map-marker-alt me-2"></i>Km 12   vía
+                                            Palmira, Cali</p>
+                                    </div>
+
+                                    <div class="col-md-6 info-vendedor">
+                                        <h6>Vendedor</h6>
+                                        <p class="mb-1"><strong>Juan Perez</strong></p>
+                                        <p class="mb-1 small"><i class="fas fa-phone me-2"></i>301 654 3210</p>
+                                        <p class="mb-0 small"><i class="fas fa-map-marker-alt me-2"></i>Carrera 80
+                                            #25-32, Medellín</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="mapa-mini mb-3">
+                                    <i class="fas fa-map-marked-alt fa-2x"></i>
+                                    <!-- por ahora una imegen despues una ubicacion de google maps -->
+                                </div>
+
+                                <div class="mb-3">
+                                    <p class="mb-1"><strong>Detalles:</strong></p>
+                                    <ul class="small ps-3">
+                                        <li>Peso: 1,200 kg</li>
+                                        <li>Fecha recogida: 15 Nov 2023</li>
+                                        <li>Fecha entrega: 17 Nov 2023</li>
+                                    </ul>
+                                </div>
+
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-aceptar btn-success">
+                                        <i class="fas fa-check-circle me-2"></i>Aceptar viaje
+                                    </button>
+                                    <button class="btn btn-outline" style="color: #1a512e;">
+                                        <i class="fas fa-info-circle me-2"></i>Ver detalles
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Viaje 2 -->
+                <div class="card card-viaje">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <span class="badge bg-success  badge-estado mb-2">Disponible </span>
+                                        <h5>Queso doble crema </h5>
+                                        <p class="text-muted">
+                                            Cali
+                                            <i class="fas fa-arrow-right mx-2"></i>
+                                            Pereira
+                                        </p>
+                                    </div>
+                                    <h4 class="text-dark">$280.000</h4>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <div class="col-md-6 info-cliente mb-3">
+                                        <h6></i>Cliente</h6>
+                                        <p class="mb-1"><strong>Supermercados la economía</strong></p>
+                                        <p class="mb-1 small"><i class="fas fa-phone me-2"></i>315 789 4560</p>
+                                        <p class="mb-0 small"><i class="fas fa-map-marker-alt me-2"></i>Carrera 80
+                                            #25-32, Medellín</p>
+                                    </div>
+
+                                    <div class="col-md-6 info-vendedor">
+                                        <h6>Vendedor</h6>
+                                        <p class="mb-1"><strong>Granja el amanecer</strong></p>
+                                        <p class="mb-1 small"><i class="fas fa-phone me-2"></i>320 123 4567</p>
+                                        <p class="mb-0 small"><i class="fas fa-map-marker-alt me-2"></i>Km 12 vía
+                                            Palmira, Cali</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="mapa-mini mb-3">
+                                    <i class="fas fa-map-marked-alt fa-2x"></i>
+                                </div>
+
+                                <div class="mb-3">
+                                    <p class="mb-1"><strong>Detalles:</strong></p>
+                                    <ul class="small ps-3">
+                                        <li>Peso: 800 kg</li>
+                                        <li>Fecha recogida: Hoy</li>
+                                        <li>Fecha entrega: Mañana</li>
+                                        <li><span class="badge bg-danger">Refrigeración requerida</span></li>
+                                    </ul>
+                                </div>
+
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-aceptar btn-success">
+                                        <i class="fas fa-check-circle me-2"></i>Aceptar viaje
+                                    </button>
+                                    <button class="btn btn-outline" style="color: #1a512e;">
+                                        <i class="fas fa-info-circle me-2"></i>Ver detalles
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script/enviosscript.js"></script>
+</body>
+
+</html>

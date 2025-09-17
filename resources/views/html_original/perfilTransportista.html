@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Chewy&family=Honk:SHLN@31.6&family=Permanent+Marker&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/PerfilAsesor.css">
+    <title>Perfil Transportista</title>
+</head>
+
+<body>
+
+
+
+    <div class="contenedor">
+        <div class="barranav">
+            <nav class="navbar navbar-expand-lg navbar-dark" style="background:#1a512e;" data-bs-theme="light w-100">
+                <div class="container-fluid">
+                    <a class="navbar-brand me-5" href="enviosDashboard.html">Agrolink</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ms-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/VehiculosDashboard.html">Mis vehiculos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="enviosDashboard.html">Envios disponibles </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="">Cerrar sesión</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+
+
+        <!-------------------------------------------------------------------------------------------------------------->
+
+
+        <div class="imagen ms-5" style="height: 350px; width: 350px; margin-top: 100px;margin-bottom: -100px;">
+            <div class="foto">
+                <img src="img/perfil.png" style="width: auto; height: 200px;object-fit: cover;"
+                    alt="foto del perfil del asesor">
+            </div>
+        </div>
+
+
+        <div class="Calificacion ms-5 ">
+            <div>
+                <h3>Calificación:</h3>
+                <div class="rating">
+                    <span class="star" data-value="1">★</span>
+                    <span class="star" data-value="2">★</span>
+                    <span class="star" data-value="3">★</span>
+                    <span class="star" data-value="4">★</span>
+                    <span class="star" data-value="5">★</span>
+                </div>
+                <p>Puntaje actual: <span id="current-rating">4.2</span>/5</p>
+            </div>
+        </div>
+
+        <!--------------------------------------------------------------------------------------->
+
+
+        <div class="servicios  ms-5 mt-5">
+            <div class="w-100">
+                <h2>
+                    Envios realizados
+                </h2>
+            </div>
+
+            <div class="producto mt-5" style="min-height: 300px; border-radius: 8%;">
+                <div class="card" style="width: 13rem; height: 10rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">Track # </h5>
+                        <p class="card-text">
+                            <strong>Cliente:</strong> Juan Perez
+                        </p>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>Origen: </strong>
+                        </li>
+                        <li class="list-group-item"><strong>Destino: </strong></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="producto mt-5" style="min-height: 300px; border-radius: 8%;">
+                <div class="card" style="width: 13rem; height: 10rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">Asesoria agricola </h5>
+                        <p class="card-text">Juan Perez</p>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Planificación de cultivos, fertilización y mejora del rendimiento.
+                        </li>
+                        <li class="list-group-item">Cali Valle Del Cauca</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="producto mt-5" style="min-height: 300px; border-radius: 8%;">
+                <div class="card" style="width: 13rem; height: 10rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">Asesoria agricola </h5>
+                        <p class="card-text">Juan Perez</p>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Planificación de cultivos, fertilización y mejora del rendimiento.
+                        </li>
+                        <li class="list-group-item">Cali Valle Del Cauca</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+</body>
+<script>
+    document.querySelectorAll('.star').forEach(star => {
+        star.addEventListener('click', function () {
+            const value = this.getAttribute('data-value');
+            document.querySelectorAll('.star').forEach(s => {
+                s.classList.toggle('active', s.getAttribute('data-value') <= value);
+            });
+            // Aquí podrías agregar código para enviar la calificación al servidor
+        });
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous">
+    </script>
+
+</html>

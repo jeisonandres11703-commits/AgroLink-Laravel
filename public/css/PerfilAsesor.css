@@ -1,0 +1,137 @@
+body {
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr auto; /* Cabecera - contenido - footer */
+    margin: 0;
+    background: url(../img/light_green_paint_background.jpg) no-repeat  center center fixed ;
+    
+}
+
+ .Redes h3 {
+    font-family: "Permanent Marker", cursive;
+    font-size: 30px; 
+    color:#1a512e; 
+}
+.Calificacion  h3  {
+     font-family: "Permanent Marker", cursive;
+    font-size: 30px; 
+    color:#1a512e; 
+}
+.servicios h2{
+    font-family: "Permanent Marker", cursive;
+    font-size: 30px; 
+    color:#1a512e; 
+}
+.contenedor {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-auto-rows: min-content; /* Filas se crean según contenido */
+    gap: 8px;
+    width: 100%;
+    min-height: 100vh; /* Cambia a min-height */
+}
+
+
+.barranav {
+    grid-column: span 8 / span 8;
+}
+
+.navbar-custom {
+    font-family: 'Chewy', cursive;
+}
+
+/* color de los  textos del navbar */
+.navbar-dark .navbar-brand,
+.navbar-dark .navbar-nav .nav-link,
+.navbar-dark .form-control,
+.navbar-dark .btn-outline-light {
+    color:#c6dc93; 
+}
+
+.navbar-dark .dropdown-item{
+    color: black;
+}
+
+/*----------------------------------------------------------------*/
+
+
+.imagen {
+    grid-row: span 2 / span 2;
+    grid-row-start: 2;
+    place-items: center;
+}
+.imagen div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+/*-----------------------------------------*/
+
+.Calificacion {
+    grid-column: span 2 / span 2;
+    grid-column-start: 1;
+    grid-row-start: 4;
+}
+.rating {
+    font-size: 2rem;
+    cursor: pointer;
+}
+.star {
+    color: #ccc;
+}
+.star:hover,
+.star.active {
+    color: gold;
+}
+/*-----------------------------------------------*/
+
+.Redes {
+    grid-column: span 2 / span 2;
+    grid-column-start: 1;
+    grid-row-start: 5;
+}
+
+.card{
+    width: 14rem;
+    height: 500px;
+}
+.card img{
+    width: auto; 
+    height: 200px;
+    object-fit: cover;
+}
+
+.card li{
+    background-color: #c6dc93;
+}
+
+.card-body{
+    background-color: #63a91f;
+    height: 130px;
+   
+}
+.card-link{
+    text-decoration: none;
+    color :#c6dc93
+}
+
+.servicios {
+    grid-column: 3 / -1;  /* Ocupa desde la columna 3 hasta el final */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding-right: 20px;  /* Espacio al borde derecho */
+    width: calc(100% - 20px); /* Ajuste para el padding */
+    box-sizing: border-box; /* Incluye padding en el ancho total */
+}
+
+.producto1, .producto2, .producto3 {
+    flex: 0 0 auto;       /* No crece, no encoge, tamaño automático */
+    margin-bottom: 20px;  /* Espacio inferior */
+}
+
+.card {
+    width: 14rem !important;  /* Ancho fijo para consistencia */
+    height: auto !important;  /* Altura automática según contenido */
+    min-height: 300px;       /* Altura mínima */
+}

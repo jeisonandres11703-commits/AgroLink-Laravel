@@ -6,7 +6,7 @@
 }
 
 body {
-    background-image: url(/img/light_green_paint_background.jpg);
+    background-image: url(../images/fondo.jpg);
     min-height: 100vh;
     display: flex;
     align-items: center;

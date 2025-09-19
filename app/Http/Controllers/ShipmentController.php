@@ -1,12 +1,14 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Shipment;
 use App\Models\Purchase;
 use App\Models\Carrier;
 use App\Models\Client;
+
+
 
 class ShipmentController extends Controller
 {
@@ -116,97 +118,52 @@ class ShipmentController extends Controller
         return view('shipments.pending', compact('purchases'));
     }
 
-     public function acceptRequest(Request $request, $purchaseId)
-    {   
+
+    public function acceptRequest($id_shipment)
+    {
         try {
-            // 1. Verificar autenticación
-            if (!Auth::check()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Debe iniciar sesión para aceptar viajes',
-                    'redirect' => route('login')
-                ], 401);
+            // Buscar el envío
+            $shipment = Shipment::findOrFail($id_shipment);
+
+            // Verificar si ya está asignado
+            if ($shipment->shipment_status === 'Asignado') {
+                return redirect()->route('shipments.dashboard')
+                    ->with('error', 'El envío ya fue asignado a otro transportador.');
             }
 
-            $user = Auth::user();
-            
-            // 2. Verificar que el usuario sea transportista
-            $carrier = Carrier::where('id_user', $user->id_user)->first();
-            
-            if (!$carrier) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Solo los transportistas pueden aceptar viajes'
-                ], 403);
-            }
+            // Asignar el transportador y cambiar estado
+            $shipment->id_carrier = Auth::id();
+            $shipment->shipment_status = 'Asignado';
+            $shipment->save();
 
-            // 3. Verificar que la compra existe
-            $purchase = Purchase::find($purchaseId);
-            if (!$purchase) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'La compra no existe'
-                ], 404);
-            }
-
-            // 4. Verificar que el envío no esté ya asignado
-            $existingShipment = Shipment::where('id_purchase', $purchaseId)->first();
-            
-            if ($existingShipment) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Este viaje ya fue asignado a otro transportista'
-                ], 400);
-            }
-
-            // 5. Crear el envío en la base de datos
-            $shipment = Shipment::create([
-                'id_purchase' => $purchaseId,
-                'id_carrier' => $user->id_user,
-                'shipment_status' => 'Asignado',
-                'departure_date' => now(),
-                'delivery_davte' => now()->addDays(3), // 3 días para entrega
-                'tracking_number' => 'TRK' . rand(100000, 999999)
-            ]);
-
-            // 6. Actualizar el stock si es necesario (opcional)
-            // foreach ($purchase->details as $detail) {
-            //     $product = $detail->product;
-            //     $product->stock -= $detail->quantity;
-            //     $product->save();
-            // }
-
-            // 7. Retornar respuesta exitosa
-            return response()->json([
-                'success' => true,
-                'message' => 'Viaje aceptado correctamente',
-                'shipment' => [
-                    'id' => $shipment->id_shipment,
-                    'tracking_number' => $shipment->tracking_number,
-                    'status' => $shipment->shipment_status,
-                    'delivery_date' => $shipment->delivery_davte
-                ]
-            ]);
-
+            return redirect()->route('shipments.dashboard')
+                ->with('success', '¡Has aceptado el viaje correctamente!');
         } catch (\Exception $e) {
-            // 8. Manejar errores inesperados
-            return response()->json([
-                'success' => false,
-                'message' => 'Error interno del servidor: ' . $e->getMessage()
-            ], 500);
+            return redirect()->route('shipments.dashboard')
+                ->with('error', 'Ocurrió un error al aceptar el viaje: ' . $e->getMessage());
         }
     }
 
-    public function dashboard()
-{
-    $shipments = Shipment::with([
-        'purchase.details.product.producer.user',
-        'purchase.client.user',
-        'carrier.user'
-    ])->get();
 
-    return view('shipments.enviosDashboard', compact('shipments'));
-}
+    public function dashboard()
+    {
+        $user = auth()->user();
+
+        // Si el usuario es transportista (carrier)
+        if ($user->carrier) {
+            $shipments = Shipment::with(['purchase.client.user', 'purchase.details.product.producer.user'])
+                ->get();
+
+            return view('shipments.enviosdashboard', compact('shipments'));
+        }
+
+        // Si no es transportista, lo devolvemos al home con error
+        return redirect()->route('home')->with('error', 'No tienes permisos para acceder al dashboard de envíos.');
+    }
+
+
+
+
 }
 
 

@@ -3,134 +3,57 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Purchase;
-use App\Models\Client;
 use App\Models\Product;
+use App\Models\Purchase;
+
 use App\Models\PurchaseDetail;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
-class PurchaseController extends Controller
-{
-    /**
-     * Muestra todas las compras (puedes filtrar por cliente si lo deseas)
-     */
-    public function index()
-    {
-        // Obtiene todas las compras con datos del cliente
-        $purchases = Purchase::with('client.user')->get();
-        return view('purchases.index', compact('purchases'));
-    }
-
-    /**
-     * Muestra el formulario para crear una nueva compra
-     */
-    public function create()
-    {
-        // Obtiene productos disponibles y el cliente autenticado (ajusta según tu auth)
-        $products = Product::all();
-        $client = Client::first(); // Cambia esto por el cliente autenticado
-        return view('purchases.create', compact('products', 'client'));
-    }
-
-    /**
-     * Guarda la compra en la base de datos
-     */
-    public function store(Request $request)
-    {
-        // Validación básica
+class PurchaseController extends Controller{
+    public function store(Request $request){
         $request->validate([
-            'id_client' => 'required|exists:tb_client,id_user',
-            'products' => 'required|array',
-            'products.*.id_product' => 'required|exists:tb_products,id_product',
-            'products.*.quantity' => 'required|integer|min:1',
+            'product_id' => 'required|exists:tb_products,id_product',
+            'quantity' => 'required|integer|min:1',
+            'address' => 'required|string|max:255',
+            'payment_method' => 'required|string|max:20',
         ]);
 
-        // Crea la compra
-        $purchase = Purchase::create([
-            'id_client' => $request->id_client,
-            'subtotal' => 0, // Calcula después
-            'taxes' => 0,
-            'total' => 0,
-            'payment_method' => $request->payment_method ?? 'Efectivo',
-        ]);
+        $clientId = Auth::id(); // id_user del cliente autenticado
 
-        $subtotal = 0;
-        // Crea los detalles de la compra
-        foreach ($request->products as $item) {
-            $product = Product::find($item['id_product']);
-            $lineSubtotal = $product->price * $item['quantity'];
+        DB::beginTransaction();
+        try {
+            // 1. Crear la compra (cabecera)
+            $purchase = Purchase::create([
+                'id_client' => $clientId,
+                'payment_method' => $request->payment_method,
+                'subtotal' => 0, // se recalcula con trigger
+                'taxes' => 0,
+                'total' => 0,
+            ]);
+
+            // 2. Obtener producto
+            $product = Product::findOrFail($request->product_id);
+
+            // 3. Insertar detalle
             PurchaseDetail::create([
                 'id_purchase' => $purchase->id_purchase,
                 'id_product' => $product->id_product,
-                'quantity' => $item['quantity'],
+                'quantity' => $request->quantity,
                 'unit_price' => $product->price,
-                'subtotal' => $lineSubtotal,
+                'subtotal' => $product->price * $request->quantity,
             ]);
-            $subtotal += $lineSubtotal;
+
+            // 4.  cuando el cliente lo necesite : actualizar dirección del cliente
+            Auth::user()->update(['Direction' => $request->address]);
+
+            DB::commit();
+
+            return redirect()->route('products.index')
+                ->with('success', 'Compra realizada con éxito. El productor recibirá la orden.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => 'Error al procesar la compra: ' . $e->getMessage()]);
         }
-
-        // Actualiza los totales de la compra
-        $purchase->subtotal = $subtotal;
-        $purchase->taxes = $subtotal * 0.19; // Ejemplo de IVA 19%
-        $purchase->total = $purchase->subtotal + $purchase->taxes;
-        $purchase->save();
-
-        return redirect()->route('purchases.index')->with('success', 'Compra registrada correctamente');
     }
-
-    /**
-     * Muestra el detalle de una compra
-     */
-    public function show($id)
-    {
-        $purchase = Purchase::with(['client.user', 'details.product'])->findOrFail($id);
-        return view('purchases.show', compact('purchase'));
-    }
-
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'products' => 'required|array',
-            'products.*.id_product' => 'required|exists:tb_products,id_product',
-            'products.*.quantity' => 'required|integer|min:1',
-        ]);
-
-        $purchase = Purchase::findOrFail($id);
-
-        // Elimina los detalles anteriores
-        $purchase->details()->delete();
-
-        $subtotal = 0;
-        // Crea los nuevos detalles de la compra
-        foreach ($request->products as $item) {
-            $product = Product::find($item['id_product']);
-            $lineSubtotal = $product->price * $item['quantity'];
-            PurchaseDetail::create([
-                'id_purchase' => $purchase->id_purchase,
-                'id_product' => $product->id_product,
-                'quantity' => $item['quantity'],
-                'unit_price' => $product->price,
-                'subtotal' => $lineSubtotal,
-            ]);
-            $subtotal += $lineSubtotal;
-        }
-
-        // Actualiza los totales de la compra
-        $purchase->subtotal = $subtotal;
-        $purchase->taxes = $subtotal * 0.19; // Ejemplo de IVA 19%
-        $purchase->total = $purchase->subtotal + $purchase->taxes;
-        $purchase->save();
-
-        return redirect()->route('purchases.index')->with('success', 'Compra actualizada correctamente');
-    }
-
-    public function destroy($id)
-    {
-        $purchase = Purchase::findOrFail($id);
-        $purchase->details()->delete(); // Elimina los detalles primero
-        $purchase->delete(); // Luego elimina la compra
-
-        return redirect()->route('purchases.index')->with('success', 'Compra eliminada correctamente');
-    }
-
-
 }

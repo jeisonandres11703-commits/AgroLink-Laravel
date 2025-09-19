@@ -9,7 +9,7 @@ class Shipment extends Model
     protected $table = 'tb_shipments'; // Nombre exacto de la tabla
     protected $primaryKey = 'id_shipment'; // Llave primaria personalizada
     public $incrementing = true;
-    public $timestamps = true; 
+    public $timestamps = false; 
     protected $fillable = [
         'id_purchase',
         'id_carrier',

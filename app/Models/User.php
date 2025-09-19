@@ -17,10 +17,20 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+    protected $table = 'tb_users';
+    protected $primaryKey = 'id_user';
+    
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'Name',
+        'user_name',
+        'user_password',
+        'last_Name',
+        'Phone',
+        'Email',
+        'City',
+        'Department',
+        'Direction',
+        'ID_Card',
     ];
 
     /**
@@ -45,4 +55,22 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function client()
+    {
+        return $this->hasOne(Client::class, 'id_user', 'id_user');
+    }
+
+    // Relación con Carrier
+    public function carrier()
+    {
+        return $this->hasOne(Carrier::class, 'id_user', 'id_user');
+    }
+
+    public function getAuthPassword()
+    {
+        return $this->user_password;
+    }
+
+
 }

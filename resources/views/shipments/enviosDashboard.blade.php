@@ -1,5 +1,5 @@
-{{-- filepath: resources/views/shipments/enviosdashboard.blade.php --}}
-@extends('layouts.shimpentsly')
+
+@extends('layouts.shipmentsly')
 
 @section('content')
 
@@ -85,7 +85,7 @@
                                             </p>
                                         </div>
                                         <h4 class="text-dark">
-                                            ${{ number_format($shipment->purchase->total, 0, ',', '.') }}
+                                            ${{ number_format($shipment->purchase->shipment_value, 0, ',', '.') }}
                                         </h4>
                                     </div>
 
@@ -102,7 +102,7 @@
                                             </p>
                                             <p class="mb-0 small">
                                                 <i class="fas fa-map-marker-alt me-2"></i>
-                                                {{ $shipment->purchase->client->user->Direction ?? '' }}
+                                                {{ $shipment->purchase->delivery_address ?? $shipment->purchase->client->user->Direction ?? '' }}
                                             </p>
                                         </div>
                                         <div class="col-md-6 info-vendedor">
@@ -136,12 +136,9 @@
                                         </ul>
                                     </div>
                                     <div class="d-grid gap-2">
-                                        <form action="{{ route('shipments.accept', $shipment->id_shipment) }}" method="POST">
-                                            @csrf
-                                            <button type="submit" class="btn btn-success">
-                                                Aceptar viaje
-                                            </button>
-                                        </form>
+                                        <a href="{{ route('shipments.selectVehicle', $shipment->id_shipment) }}" class="btn btn-success">
+                                            Aceptar viaje
+                                        </a>
 
                                         <a href="{{ route('shipments.show', $shipment->id_shipment) }}" class="btn btn-outline"
                                             style="color: #1a512e;">

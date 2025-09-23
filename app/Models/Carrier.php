@@ -31,4 +31,9 @@ class Carrier extends Model
     {
         return $this->belongsTo(Qualification::class, 'id_Qualification', 'id_Qualification');
     }
+
+    public function vehicles()
+    {
+        return $this->hasMany(Vehicle::class, 'id_carrier', 'id_user');
+    }
 }

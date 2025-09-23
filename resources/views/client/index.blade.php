@@ -89,9 +89,10 @@
             <div class="card-body">
                 <a href="{{ route('products.show', ['id' => $product->id_product]) }}" class="card-link" style="text-decoration: none; color: #c6dc93;">Ver Producto</a>
                 @auth
-                    <button class="btn btn-success btn-sm add-to-cart" data-product-id="{{ $product->id_product }}">
-                        Agregar al carrito
+                    <button class="btn btn-success btn-sm" onclick="addToCart({{ $product->id_product }})">
+                        <i class="fas fa-plus me-2"></i>Agregar al carrito
                     </button>
+
                 @endauth
             </div>
         </div>
@@ -145,6 +146,6 @@
 <footer class="footer">
     <p>© 2025 Agrolink. Todos los derechos reservados.</p>
 </footer>
-
+<script src="{{ asset('js/cart.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
 @endsection

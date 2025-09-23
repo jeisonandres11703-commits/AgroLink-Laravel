@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.shipmentsly')
 
 @section('content')
 <div class="container mt-4">

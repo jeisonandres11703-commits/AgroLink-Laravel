@@ -11,7 +11,7 @@ class ProductImage extends Model
     protected $table = 'tb_product_images';
     protected $primaryKey = 'id_image';
     public $incrementing = true;
-    public $timestamps = false; // Considera habilitar timestamps
+    public $timestamps = false; 
 
     protected $fillable = [
         'id_product',
@@ -21,7 +21,7 @@ class ProductImage extends Model
         'uploaded_at'
     ];
 
-    // Relación con el producto
+    
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class, 'id_product', 'id_product');

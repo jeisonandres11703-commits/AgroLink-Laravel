@@ -52,7 +52,7 @@
                     
                     <!-- Pie de página -->
                     <div class="login-footer">
-                        ¿No tienes una cuenta? <a href="#">Regístrate aquí</a>
+                        ¿No tienes una cuenta? <a href="{{ route('register') }}">Regístrate aquí</a>
                     </div>
                 </div>
             </div>

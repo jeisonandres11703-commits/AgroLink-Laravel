@@ -19,6 +19,7 @@ class Purchase extends Model
         'shipment_value',
         'total',
         'payment_method',
+        'delivery_address',
     ];
 
     // casteo para fechas y decimales
@@ -28,6 +29,7 @@ class Purchase extends Model
         'taxes' => 'decimal:2',
         'shipment_value' => 'decimal:2',
         'total' => 'decimal:2',
+        'delyvery_adress' => 'string|max:100',
     ];
 
 

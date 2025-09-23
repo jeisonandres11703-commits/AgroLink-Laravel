@@ -10,6 +10,15 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
+
+    /** @use HasFactory<\Database\Factories\UserFactory> */
+    use HasFactory, Notifiable;
+
+    // Relación con Producer
+    public function producer()
+    {
+        return $this->hasOne(Producer::class, 'id_user', 'id_user');
+    }
     use HasFactory, Notifiable;
 
     /**
@@ -19,6 +28,7 @@ class User extends Authenticatable
      */
     protected $table = 'tb_users';
     protected $primaryKey = 'id_user';
+    public $timestamps = false;
     
     protected $fillable = [
         'Name',

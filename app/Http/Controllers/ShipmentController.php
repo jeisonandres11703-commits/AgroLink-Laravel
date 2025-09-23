@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Vehicle;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Shipment;
@@ -80,12 +81,22 @@ class ShipmentController extends Controller
         return view('shipments.edit', compact('shipment', 'carriers'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+
     // Actualiza los datos del envío:
+
     public function update(Request $request, string $id)
     {
+        // Si viene de la vista Mis Viajes, solo permitir actualizar la fecha de entrega
+        if ($request->has('delivery_davte')) {
+            $request->validate([
+                'delivery_davte' => 'nullable|date',
+            ]);
+            $shipment = Shipment::findOrFail($id);
+            $shipment->delivery_davte = $request->delivery_davte;
+            $shipment->save();
+            return redirect()->route('shipments.mytrips')->with('success', 'Fecha de entrega actualizada');
+        }
+        // Lógica original para otros updates
         $request->validate([
             'id_carrier' => 'nullable|exists:tb_carrier,id_user',
             'shipment_status' => 'required',
@@ -93,23 +104,18 @@ class ShipmentController extends Controller
             'delivery_davte' => 'nullable|date',
             'tracking_number' => 'nullable|string|max:10',
         ]);
-
         $shipment = Shipment::findOrFail($id);
         $shipment->update($request->all());
-
         return redirect()->route('shipments.index')->with('success', 'Envío actualizado correctamente');
-
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+   
     public function destroy(string $id)
     {
-        $shipment = Shipment::findOrFail($id);
-        $shipment->delete();
+    $shipment = Shipment::findOrFail($id);
+    $shipment->delete();
 
-        return redirect()->route('shipments.index')->with('success', 'Envío eliminado correctamente');
+    return redirect()->route('shipments.mytrips')->with('success', 'Envío eliminado correctamente');
     }
 
     public function pendingRequests()
@@ -119,29 +125,40 @@ class ShipmentController extends Controller
     }
 
 
-    public function acceptRequest($id_shipment)
+    public function acceptRequest(Request $request, $id_shipment)
     {
+        $request->validate([
+            'id_vehicle' => 'required|exists:tb_vehicles,id_vehicle',
+        ]);
         try {
-            // Buscar el envío
             $shipment = Shipment::findOrFail($id_shipment);
-
-            // Verificar si ya está asignado
             if ($shipment->shipment_status === 'Asignado') {
                 return redirect()->route('shipments.dashboard')
                     ->with('error', 'El envío ya fue asignado a otro transportador.');
             }
-
-            // Asignar el transportador y cambiar estado
             $shipment->id_carrier = Auth::id();
+            $shipment->id_vehicle = $request->id_vehicle;
             $shipment->shipment_status = 'Asignado';
             $shipment->save();
-
             return redirect()->route('shipments.dashboard')
                 ->with('success', '¡Has aceptado el viaje correctamente!');
         } catch (\Exception $e) {
             return redirect()->route('shipments.dashboard')
                 ->with('error', 'Ocurrió un error al aceptar el viaje: ' . $e->getMessage());
         }
+    }
+    /**
+     * Actualizar el vehículo asignado a un envío desde Mis Viajes
+     */
+    public function updateVehicle(Request $request, $id_shipment)
+    {
+        $request->validate([
+            'id_vehicle' => 'required|exists:tb_vehicles,id_vehicle',
+        ]);
+        $shipment = Shipment::findOrFail($id_shipment);
+        $shipment->id_vehicle = $request->id_vehicle;
+        $shipment->save();
+        return redirect()->back()->with('success', 'Vehículo actualizado correctamente para el envío.');
     }
 
 
@@ -152,8 +169,8 @@ class ShipmentController extends Controller
         // Si el usuario es transportista (carrier)
         if ($user->carrier) {
             $shipments = Shipment::with(['purchase.client.user', 'purchase.details.product.producer.user'])
+                ->where('shipment_status', 'Buscando Transporte')
                 ->get();
-
             return view('shipments.enviosdashboard', compact('shipments'));
         }
 
@@ -161,7 +178,57 @@ class ShipmentController extends Controller
         return redirect()->route('home')->with('error', 'No tienes permisos para acceder al dashboard de envíos.');
     }
 
+       // Vista personalizada: Mis Viajes para transportista
+    public function myShipments()
+    {
+        $user = auth()->user();
+        if ($user->carrier) {
+            $shipments = Shipment::where('id_carrier', $user->id_user)
+                ->where('shipment_status', 'Asignado')
+                ->with(['purchase.client.user', 'purchase.details.product.producer.user'])
+                ->get();
+            return view('shipments.mytrips', compact('shipments'));
+        }
+        return redirect()->route('carrier.home')->with('error', 'No tienes permisos para acceder a Mis Viajes.');
+    }
 
+    /* Mostrar formulario de selección de vehículo al aceptar viaje
+     */
+    public function selectVehicle($id_shipment)
+    {
+        $shipment = Shipment::findOrFail($id_shipment);
+        $carrier = Auth::user()->carrier;
+        $vehicles = $carrier ? $carrier->vehicles : collect();
+        return view('shipments.select_vehicle', compact('shipment', 'vehicles'));
+    }
+
+    /**
+     * Mostrar perfil del transportista con envíos pendientes y realizados
+     */
+    public function carrierProfile()
+    {
+        $user = auth()->user();
+        $pendingShipments = Shipment::where('id_carrier', $user->id_user)
+            ->where('shipment_status', 'Asignado')
+            ->with(['purchase.client.user', 'purchase.details.product.producer.user'])
+            ->get();
+        $finishedShipments = Shipment::where('id_carrier', $user->id_user)
+            ->where('shipment_status', 'Finalizado')
+            ->with(['purchase.client.user', 'purchase.details.product.producer.user'])
+            ->get();
+        return view('profile.carrier', compact('pendingShipments', 'finishedShipments'));
+    }
+
+    /**
+     * Finalizar un envío (cambiar estado a Finalizado)
+     */
+    public function finish($id_shipment)
+    {
+        $shipment = Shipment::findOrFail($id_shipment);
+        $shipment->shipment_status = 'Finalizado';
+        $shipment->save();
+        return redirect()->back()->with('success', '¡Envío finalizado correctamente!');
+    }
 
 
 }

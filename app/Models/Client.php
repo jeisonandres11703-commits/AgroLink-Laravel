@@ -19,7 +19,7 @@ class Client extends Model
 
     public function purchases()
     {
-    return $this->hasMany(Purchase::class, 'id_client', 'id_user');
+        return $this->hasMany(Purchase::class, 'id_user', 'id_user');
     }
 
      public function user()

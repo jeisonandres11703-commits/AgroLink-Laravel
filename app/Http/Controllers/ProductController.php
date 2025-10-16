@@ -8,50 +8,8 @@ use App\Models\ProductImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
-class ProductController extends Controller{
-    /**
-     * Guarda un nuevo producto creado por el productor.
-     */
-    public function store(Request $request)
-    {
-
-        $request->validate([
-            'product_name' => 'required|string|max:100',
-            'product_description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'stock' => 'required|integer|min:0',
-            'id_category' => 'required|exists:tb_product_categories,id_categorie',
-            'weight_kg' => 'required|numeric|min:0',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
-
-        $product = Product::create([
-            'id_user' => auth()->id(),
-            'id_category' => $request->id_category,
-            'product_name' => $request->product_name,
-            'product_description' => $request->product_description,
-            'price' => $request->price,
-            'stock' => $request->stock,
-            'weight_kg' => $request->weight_kg,
-        ]);
-
-        // Procesar imágenes si se subieron
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $index => $image) {
-                $path = $image->store('products/images', 'public');
-                ProductImage::create([
-                    'id_product' => $product->id_product,
-                    'file_path' => $path,
-                    'file_type' => 'image',
-                    'is_primary' => $index === 0, // La primera como principal
-                    'uploaded_at' => now()
-                ]);
-            }
-        }
-
-        return redirect()->route('producer.products')->with('success', 'Producto creado correctamente');
-    }
-
+class ProductController extends Controller
+{
     public function index()
     {
         // Obtener productos con sus imágenes
@@ -61,7 +19,7 @@ class ProductController extends Controller{
             ->get();
 
 
-        // Obtener un producto destacado por ahora es random
+        // Obtener un producto destacado (puedes cambiar la lógica según lo necesites)
         $featuredProduct = Product::with('images')
             ->where('stock', '>', 0)
             ->inRandomOrder()
@@ -74,7 +32,7 @@ class ProductController extends Controller{
 {
     $product = Product::with(['producer.user', 'images'])->findOrFail($id);
     
-    // Obtener productos similares 
+    // Obtener productos similares (misma categoría, excluyendo el actual)
     $similarProducts = Product::with('images')
         ->where('id_category', $product->id_category)
         ->where('id_product', '!=', $id)
@@ -85,7 +43,7 @@ class ProductController extends Controller{
     return view('products.show', compact('product', 'similarProducts'));
 }
 
-    // Método para que los productores agreguen imágenes - cuando se implemente el modulo del productor
+    // Método para que los productores agreguen imágenes
     public function storeImage(Request $request, $productId)
     {
         $request->validate([

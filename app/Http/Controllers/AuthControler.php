@@ -16,61 +16,7 @@ class AuthControler extends Controller
         if (Auth::check()) {
             return redirect($this->redirectPathFor(Auth::user()));
         }
-        return view('auth.login'); 
-    }
-
-       // Muestra el formulario de registro
-    public function showRegister()
-    {
-        return view('auth.register');
-    }
-
-        // Procesa el registro de usuario
-    public function register(Request $request)
-    {
-        $request->validate([
-            'Name' => 'required|string|max:50',
-            'last_Name' => 'required|string|max:50',
-            'user_name' => 'required|string|max:100|unique:tb_users,user_name',
-            'user_password' => 'required|string|min:6',
-            'Email' => 'required|email|max:100|unique:tb_users,Email',
-            'City' => 'required|string|max:50',
-            'Department' => 'required|string|max:50',
-            'Direction' => 'required|string|max:50',
-            'ID_Card' => 'required|string|max:12|unique:tb_users,ID_Card',
-            'Phone' => 'required|string|max:15',
-            'role' => 'required|in:client,producer,advicer,carrier',
-        ]);
-
-        $user = new User();
-        $user->Name = $request->Name;
-        $user->last_Name = $request->last_Name;
-        $user->user_name = $request->user_name;
-        $user->user_password = bcrypt($request->user_password);
-        $user->Email = $request->Email;
-        $user->City = $request->City;
-        $user->Department = $request->Department;
-        $user->Direction = $request->Direction;
-        $user->ID_Card = $request->ID_Card;
-        $user->Phone = $request->Phone;
-        $user->save();
-
-        // Crear registro en la tabla de rol correspondiente
-        $role = $request->role;
-        $id_user = $user->id_user;
-        if ($role === 'client') {
-            \App\Models\Client::create(['id_user' => $id_user]);
-        } elseif ($role === 'producer') {
-            \App\Models\Producer::create(['id_user' => $id_user]);
-        } elseif ($role === 'advicer') {
-            \App\Models\Advicer::create(['id_user' => $id_user]);
-        } elseif ($role === 'carrier') {
-            \App\Models\Carrier::create(['id_user' => $id_user]);
-        }
-
-    // Autologin tras registro
-    Auth::login($user);
-    return redirect($this->redirectPathFor($user));
+        return view('auth.login'); // Usa tu HTML existente en resources/views/auth/login.blade.php
     }
 
     // Procesa el login
@@ -125,7 +71,7 @@ class AuthControler extends Controller
             return route('advisor.home');
         }
         if (DB::table('tb_carrier')->where('id_user', $user->id_user)->exists()) {
-            return route('carrier.home'); 
+            return route('carrier.home');
         }
         if (DB::table('tb_producers')->where('id_user', $user->id_user)->exists()) {
             return route('producer.home');

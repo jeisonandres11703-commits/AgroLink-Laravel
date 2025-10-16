@@ -1,0 +1,171 @@
+:root {
+  --color-primario: #1a512e;
+  --color-secundario: #c6dc93;
+  --color-acento: #63a91f;
+  --fuente-principal: 'Chewy', cursive;
+  --fuente-titulos: "Permanent Marker", cursive;
+}
+
+body {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto; /* Cabecera - contenido - footer */
+  margin: 0;
+  background: url("../img/light_green_paint_background.jpg") no-repeat center center fixed;
+  background-size: cover; /* Mejora: evita cortes de imagen */
+  font-family: var(--fuente-principal), sans-serif;
+}
+
+.contenedor {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-auto-rows: min-content;
+  gap: 8px;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.barranav {
+  grid-column: span 8 / span 8;
+}
+
+.navbar-custom {
+  font-family: var(--fuente-principal);
+}
+
+/* color de los  textos del navbar */
+.navbar-dark .navbar-brand,
+.navbar-dark .navbar-nav .nav-link,
+.navbar-dark .form-control,
+.navbar-dark .btn-outline-light {
+  color: var(--color-secundario);
+}
+
+.navbar-dark .dropdown-item {
+  color: black;
+}
+
+/*-------------------------------Carrusel-------------------------------------------------*/
+.card {
+  width: 14rem;
+  height: 500px;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.card img {
+  width: auto;
+  height: 200px;
+  object-fit: cover;
+}
+
+.card li {
+  background-color: var(--color-secundario);
+}
+
+.card-body {
+  background-color: var(--color-acento);
+  height: 130px;
+}
+
+.card-link {
+  text-decoration: none;
+  color: var(--color-secundario);
+}
+
+.carrusel {
+  grid-column: 1 / -1; /* Ocupa todo el ancho */
+  grid-row: 2 / span 2;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.letrero {
+  grid-column: span 8 / span 8;
+  grid-row-start: 4;
+  align-items: center;
+  display: grid;
+  place-items: center;
+  background: var(--color-primario);
+  width: 100%;
+}
+
+.letrero h2 {
+  font-family: var(--fuente-titulos);
+  font-size: 1.7rem; /* Evito repetición */
+  color: var(--color-secundario);
+  text-align: center;
+  margin: 1rem 0;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* -------------------- Productos -------------------- */
+.producto1 { grid-column-start: 3; grid-row-start: 5; }
+.producto2 { grid-column-start: 4; grid-row-start: 5; }
+.producto3 { grid-column-start: 5; grid-row-start: 5; }
+.producto4 { grid-column-start: 6; grid-row-start: 5; }
+.producto5 { grid-column-start: 3; grid-row-start: 6; }
+.producto6 { grid-column-start: 4; grid-row-start: 6; }
+.producto7 { grid-column-start: 5; grid-row-start: 6; }
+.producto8 { grid-column-start: 6; grid-row-start: 6; }
+.producto9 { grid-column-start: 3; grid-row-start: 7; }
+.producto10 { grid-column-start: 4; grid-row-start: 7; }
+.producto11 { grid-column-start: 5; grid-row-start: 7; }
+.producto12 { grid-column-start: 6; grid-row-start: 7; }
+.producto13 { grid-column-start: 3; grid-row-start: 8; }
+.producto14 { grid-column-start: 4; grid-row-start: 8; }
+.producto15 { grid-column-start: 5; grid-row-start: 8; }
+.producto16 { grid-column-start: 6; grid-row-start: 8; }
+.producto17 { grid-column: span 8 / span 8; grid-row-start: 9; }
+
+.destacado {
+  grid-column: span 4 / span 4;
+  grid-row: span 2 / span 2;
+  grid-column-start: 3;
+  grid-row-start: 10;
+}
+
+.producto1_dest {
+  place-items: center;
+}
+
+/* -------------------- Footer -------------------- */
+.footer {
+  grid-column: 1 / -1;
+  grid-row-start: 12;
+  align-self: end;
+  padding: 1rem;
+  background: var(--color-primario);
+  border-top: 1px solid #dee2e6;
+  text-align: center;
+  color: var(--color-secundario);
+}
+
+/* Imágenes del carrusel */
+.carousel-inner,
+.carousel-item {
+  width: 100%;
+  height: 100%;
+}
+
+.carousel-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Mantiene relación de aspecto cubriendo el espacio */
+  object-position: center; /* Centra la imagen */
+}
+
+/* Opcional: Ajuste responsivo */
+@media (max-width: 768px) {
+  .img-carousel {
+    height: 300px; /* Altura menor en dispositivos móviles */
+  }
+}

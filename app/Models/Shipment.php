@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Shipment extends Model
 {
-    protected $table = 'tb_shipments'; 
-    protected $primaryKey = 'id_shipment'; 
+    protected $table = 'tb_shipments'; // Nombre exacto de la tabla
+    protected $primaryKey = 'id_shipment'; // Llave primaria personalizada
     public $incrementing = true;
     public $timestamps = false; 
     protected $fillable = [
@@ -33,11 +33,6 @@ class Shipment extends Model
     public function client()
     {
         return $this->purchase ? $this->purchase->client() : null;
-    }
-
-    public function vehicle()
-    {
-        return $this->belongsTo(Vehicle::class, 'id_vehicle', 'id_vehicle');
     }
 }
 

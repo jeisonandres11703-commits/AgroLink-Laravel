@@ -3,9 +3,9 @@
 @section('title', $product->product_name . ' - Agrolink')
 
 @section('styles')
-
+    <!-- Agregar FontAwesome para los iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    
     <style>
         .product-container {
             max-width: 1200px;
@@ -100,8 +100,8 @@
             font-weight: 500;
         }
 
-        .form-group select,
-        .form-group input,
+        .form-group select, 
+        .form-group input, 
         .form-group textarea {
             width: 100%;
             padding: 10px;
@@ -212,11 +212,11 @@
             .product-main {
                 flex-direction: column;
             }
-
+            
             .product-info {
                 padding: 20px;
             }
-
+            
             .similar-product {
                 width: 45%;
             }
@@ -231,111 +231,151 @@
 @endsection
 
 @section('content')
-    <div class="product-container">
-        <div class="product-main">
-
-            <div class="product-image">
-                @if($product->images->count() > 0)
-                    <img src="{{ asset('storage/' . $product->images->first()->file_path) }}" alt="{{ $product->product_name }}"
-                        class="img-fluid">
-                @else
-                    <img src="{{ asset('img/placeholder.jpg') }}" alt="Imagen no disponible" class="img-fluid">
-                @endif
-            </div>
-
-            <!-- Información del producto -->
-            <div class="product-info">
-                <h1 class="product-title">{{ $product->product_name }}</h1>
-                <div class="product-seller">
-                    Vendido Por: {{ $product->producer->user->Name ?? 'Productor' }}
-                    {{ $product->producer->user->last_Name ?? '' }}
-                </div>
-
-                <div class="product-price">
-                    ${{ number_format($product->price, 0, ',', '.') }}
-                    <br>
-                    <small>
-                        @if($product->weight_kg)
-                            Peso en kg {{ $product->weight_kg }} -
-                            Precio por Kg {{ number_format($product->price / $product->weight_kg, 0, ',', '.') }}$
-                        @endif
-                    </small>
-                </div>
-
-                <div class="product-description">
-                    {{ $product->product_description }}
-                </div>
-
-                <div class="product-stock">
-                    <i class="fas fa-{{ $product->stock > 0 ? 'check-circle' : 'times-circle' }} me-2"></i>
-                    {{ $product->stock > 0 ? 'Stock Disponible (' . $product->stock . ' unidades)' : 'Agotado' }}
-                </div>
-
-                <!-- Formulario de compra -->
-                @auth
-                    <div class="purchase-form">
-                        <div class="d-flex align-items-center">
-                            <label for="quantity" class="me-2">Cantidad:</label>
-                            <input type="number" name="quantity" id="quantity" class="form-control me-2" min="1" max="{{ $product->stock }}" value="1" required style="width:100px;" {{ $product->stock == 0 ? 'disabled' : '' }}>
-                            <button type="button" class="btn btn-success" id="add-to-cart-btn" {{ $product->stock == 0 ? 'disabled' : '' }}>
-                                <i class="fas fa-cart-plus me-2"></i>Agregar al carrito
-                            </button>
-                        </div>
-                        @if($product->stock == 0)
-                            <small class="text-danger">Producto agotado</small>
-                        @else
-                            <small class="text-muted">Disponible: {{ $product->stock }} unidad(es)</small>
-                        @endif
-                    </div>
-                @else
-                    <div class="alert alert-warning mt-3">
-                        <i class="fas fa-exclamation-triangle me-2"></i>
-                        Debes <a href="{{ route('login') }}" class="alert-link">iniciar sesión</a> para realizar compras
-                    </div>
-                @endauth
-            </div>
+<div class="product-container">
+    <div class="product-main">
+        <!-- Imagen del producto -->
+        <div class="product-image">
+            @if($product->images->count() > 0)
+                <img src="{{ asset('storage/' . $product->images->first()->file_path) }}" 
+                     alt="{{ $product->product_name }}"
+                     class="img-fluid">
+            @else
+                <img src="{{ asset('img/placeholder.jpg') }}" 
+                     alt="Imagen no disponible"
+                     class="img-fluid">
+            @endif
         </div>
 
-        <!-- Productos similares -->
-        @if(isset($similarProducts) && $similarProducts->count() > 0)
-            <div class="similar-products">
-                <h2 class="similar-title">¡Productos similares!</h2>
-                <div class="similar-container">
-                    @foreach($similarProducts as $similar)
-                        <div class="similar-product">
-                            @if($similar->images->count() > 0)
-                                <img src="{{ asset('storage/' . $similar->images->first()->file_path) }}"
-                                    alt="{{ $similar->product_name }}">
-                            @else
-                                <img src="{{ asset('img/placeholder.jpg') }}" alt="Imagen no disponible">
-                            @endif
-                            <h6>{{ $similar->product_name }}</h6>
-                            <div class="similar-price">${{ number_format($similar->price, 0, ',', '.') }}</div>
-                            <a href="{{ route('products.show', $similar->id_product) }}" class="btn btn-sm btn-success mt-2">Ver
-                                producto</a>
-                        </div>
-                    @endforeach
-                </div>
+        <!-- Información del producto -->
+        <div class="product-info">
+            <h1 class="product-title">{{ $product->product_name }}</h1>
+            <div class="product-seller">
+                Vendido Por: {{ $product->producer->user->Name ?? 'Productor' }} {{ $product->producer->user->last_Name ?? '' }}
             </div>
-        @endif
+            
+            <div class="product-price">
+                ${{ number_format($product->price, 0, ',', '.') }} 
+                <br>
+                <small>
+                    @if($product->weight_kg)
+                        Peso en kg {{ $product->weight_kg }} - 
+                        Precio por Kg {{ number_format($product->price / $product->weight_kg, 0, ',', '.') }}$
+                    @endif
+                </small>
+            </div>
+            
+            <div class="product-description">
+                {{ $product->product_description }}
+            </div>
+            
+            <div class="product-stock">
+                <i class="fas fa-{{ $product->stock > 0 ? 'check-circle' : 'times-circle' }} me-2"></i>
+                {{ $product->stock > 0 ? 'Stock Disponible (' . $product->stock . ' unidades)' : 'Agotado' }}
+            </div>
+
+            <!-- Formulario de compra -->
+            @auth
+            <div class="purchase-form">
+                <form action="{{ route('purchase.store') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="product_id" value="{{ $product->id_product }}">
+                    
+                    <div class="form-group">
+                        <label for="quantity">Cantidad:</label>
+                        <select name="quantity" id="quantity" required {{ $product->stock == 0 ? 'disabled' : '' }}>
+                            <option value="" disabled selected>Selecciona la cantidad</option>
+                            @for($i = 1; $i <= min(10, $product->stock); $i++)
+                                <option value="{{ $i }}">{{ $i }} unidad(es)</option>
+                            @endfor
+                            @if($product->stock > 10)
+                                <option value="more">Más de 10...</option>
+                            @endif
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address">Dirección de envío:</label>
+                        <textarea name="address" id="address" rows="3" required 
+                                  placeholder="Ingresa tu dirección de envío"
+                                  {{ $product->stock == 0 ? 'disabled' : '' }}>{{ Auth::user()->Direction ?? '' }}</textarea>
+                        <small class="text-muted">Puedes modificar tu dirección actual si es necesario</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="payment_method">Método de pago:</label>
+                        <select name="payment_method" id="payment_method" required {{ $product->stock == 0 ? 'disabled' : '' }}>
+                            <option value="Efectivo"> Efectivo</option>
+                            <option value="Transferencia"> Transferencia</option>
+                            <option value="Targeta De Credito"> Tarjeta de crédito</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn-comprar" {{ $product->stock == 0 ? 'disabled' : '' }}>
+                        <i class="fas fa-shopping-cart me-2"></i>Comprar ahora
+                    </button>
+                </form>
+                
+                <button class="btn-carrito" onclick="addToCart({{ $product->id_product }})" {{ $product->stock == 0 ? 'disabled' : '' }}>
+                    <i class="fas fa-plus me-2"></i>Agregar al carrito
+                </button>
+            </div>
+            @else
+            <div class="alert alert-warning mt-3">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                Debes <a href="{{ route('login') }}" class="alert-link">iniciar sesión</a> para realizar compras
+            </div>
+            @endauth
+        </div>
     </div>
+
+    <!-- Productos similares -->
+    @if(isset($similarProducts) && $similarProducts->count() > 0)
+    <div class="similar-products">
+        <h2 class="similar-title">¡Productos similares!</h2>
+        <div class="similar-container">
+            @foreach($similarProducts as $similar)
+            <div class="similar-product">
+                @if($similar->images->count() > 0)
+                    <img src="{{ asset('storage/' . $similar->images->first()->file_path) }}" 
+                         alt="{{ $similar->product_name }}">
+                @else
+                    <img src="{{ asset('img/placeholder.jpg') }}" 
+                         alt="Imagen no disponible">
+                @endif
+                <h6>{{ $similar->product_name }}</h6>
+                <div class="similar-price">${{ number_format($similar->price, 0, ',', '.') }}</div>
+                <a href="{{ route('products.show', $similar->id_product) }}" class="btn btn-sm btn-success mt-2">Ver producto</a>
+            </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
+</div>
 @endsection
-@stack('scripts')
 
 @section('scripts')
-    <script src="{{ asset('js/cart.js') }}"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const addToCartBtn = document.getElementById('add-to-cart-btn');
-            if (addToCartBtn) {
-                addToCartBtn.addEventListener('click', function () {
-                    console.log('Click en agregar al carrito');
-                    const quantity = parseInt(document.getElementById('quantity').value) || 1;
-                    addToCart({{ $product->id_product }}, quantity);
-                });
-            } else {
-                console.log('No se encontró el botón add-to-cart-btn');
-            }
-        });
-    </script>
+<script>
+function addToCart(productId) {
+    // Lógica para agregar al carrito
+    alert('Producto ' + productId + ' agregado al carrito');
+}
+
+// Validación del formulario
+document.querySelector('form')?.addEventListener('submit', function(e) {
+    const quantity = document.getElementById('quantity').value;
+    const address = document.getElementById('address').value;
+    
+    if (!quantity || quantity === '') {
+        e.preventDefault();
+        alert('Por favor selecciona una cantidad');
+        return false;
+    }
+    
+    if (!address.trim()) {
+        e.preventDefault();
+        alert('Por favor ingresa una dirección de envío');
+        return false;
+    }
+});
+</script>
 @endsection

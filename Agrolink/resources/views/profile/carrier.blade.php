@@ -12,8 +12,8 @@
             <p class="text-muted">{{ Auth::user()->email }}</p>
             <div class="Calificacion mb-4">
                 <h5>Calificación:</h5>
-                <div class="rating">
-                    @php $score = Auth::user()->carrier->qualification->score ?? 4.2; @endphp
+                <div class="rating">   
+                    @php $score = Auth::user()->carrier?->qualification?->score ?? 4.2; @endphp                //agregue dos ??
                     @for($i = 1; $i <= 5; $i++)
                         <span class="star{{ $i <= $score ? ' active' : '' }}">★</span>
                     @endfor

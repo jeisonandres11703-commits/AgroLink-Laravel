@@ -141,6 +141,9 @@ Route::middleware(['auth'])->prefix('producer')->name('producer.')->group(functi
      Route::get('/profile', [App\Http\Controllers\ProducerController::class, 'profile'])->name('profile');
      // CRUD productos (crear, editar, eliminar, actualizar stock) - sin create
      Route::resource('manage-products', App\Http\Controllers\ProductController::class)->except(['show', 'index', 'create']);
+     // protege la ruta con middleware auth
+     Route::get('/dashboard', [ShipmentController::class, 'dashboard'])
+    ->middleware('auth');
 });
 
 
